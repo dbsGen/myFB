@@ -1,0 +1,13 @@
+.navbar.navbar-fixed-top
+  .navbar-inner
+    .container
+      .brand= CONFIG.title
+      - if login?
+        .username.pull-right
+          = current_user.username
+          ,欢迎使用 [
+          = link_to '登出', logout_path, method: 'delete'
+          ]
+      - else
+        .btn-group.pull-right
+          %btn.btn#login{href: oauth_start_path} 使用百度帐号登陆

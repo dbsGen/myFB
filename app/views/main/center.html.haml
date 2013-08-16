@@ -1,0 +1,14 @@
+= javascript_include_tag 'app_js/center'
+
+.center
+  .file-content.clearfix{src: images_path}
+    #insert.file
+      %input#upload{type: 'file', style: 'display: none', name: 'file', url: upload_path}
+      %input#upload-clicker{type: 'file', style: 'display: none', name: 'file'}
+      .inner
+        .add
+        .add-label
+          上传图片
+    #end
+
+= render partial: 'main/files/image'
