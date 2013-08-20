@@ -42,17 +42,17 @@ class MainController < ApplicationController
           }
         end
       rescue StandardError => e
-        render status: 500, json: {code: 200, msg: 'Upload failed'}
+        render status: 500, json: {code: 500, msg: 'Upload failed'}
       end
     else
-      render status: 500, json: {code: 500, msg: 'It is not a image'}
+      render status: 500, json: {code: 502, msg: 'It is not a image'}
     end
   end
 
   def images
     respond_to do |format|
       format.json do
-        render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(current_user)
+        return render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(current_user)
         result = BaiduApi.files(current_user.token.source, "/#{IMAGE_DIR}")
         if result['error_code']
           # 没有这个目录
@@ -77,7 +77,7 @@ class MainController < ApplicationController
   def remove
     file = params[:file]
     format = params[:format]
-    render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(current_user)
+    return render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(current_user)
     uri = BaiduApi.delete(current_user.token.source, "/#{IMAGE_DIR}/#{file}.#{format}")
     begin
       result = JSON(HTTPClient.post(uri).body)
@@ -96,7 +96,7 @@ class MainController < ApplicationController
     file = params[:file]
     format = params[:format]
     user = User.find_by(third_party_id: uid.to_s)
-    render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(user)
+    return render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(user)
     redirect_to BaiduApi.download(user.token.source, "/#{IMAGE_DIR}/#{file}.#{format}")
   end
 

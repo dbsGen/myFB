@@ -108,6 +108,9 @@ $(document).ready ->
     done: (e, data) ->
       for item in data.result.list
         insertFile(item, 0, true)
+    fail: (e, data) ->
+      if data.code == 502
+        alert('这不是图片,如果这是误报的话请联系作者.(页面下边中间位置)')
     always: ->
       UPLOADING = false
       upload_inner.removeClass('loading')
