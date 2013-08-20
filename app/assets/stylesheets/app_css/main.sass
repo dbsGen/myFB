@@ -44,6 +44,7 @@ body
   margin: 24px auto
   width: 80%
   height: 500px
+  overflow: auto
   //>.file-content
   //>.file-upload
   //  height: 100px
@@ -62,6 +63,15 @@ $border-width: 30px
   border-radius: 10px
   margin-right: 10px
   margin-bottom: 10px
+  position: relative
+  .file-close
+    position: absolute
+    right: 0px
+    top: 0px
+    height: 28px
+    width: 28px
+    background: transparent
+    border: none
   .inner
     border-radius: 30px
     border: 8px dotted #cccccc
@@ -72,6 +82,11 @@ $border-width: 30px
       background: url("/images/add.png") no-repeat center
       width: 100%
       height: 100%
+    .loading
+      margin: 31px
+      height: 43px
+      width: 43px
+      display: none
     .add-label
       position: absolute
       width: $file-width - $border-width / 2
@@ -80,9 +95,20 @@ $border-width: 30px
       text-align: center
       font-size: 14px
       font-weight: bold
-      color: #999
+      color: #ddd
+    &.loading
+      background-color: #eeeeee
+      cursor: auto
+      .add
+        display: none
+      .loading
+        display: block
+      .add-label
+        color: #333
     &:hover, &.active
       background-color: #eeeeee
+      .add-label
+        color: #888
 
 $image-width: 160px
 $image-height: 180px

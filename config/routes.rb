@@ -61,6 +61,7 @@ BaiduYunPic::Application.routes.draw do
   get 'center/images' => 'Main#images', as: 'images'
   post 'upload' => 'Main#upload', as: 'upload'
   get 'images/:uid(/:file)' => 'Main#image', as: 'image'
+  delete 'images/:file' => 'Main#remove', as: 'remove'
 
   get 'oauth/start' => 'OAuth#start', as: 'oauth_start'
   get 'oauth/callback' => 'OAuth#callback', as: 'oauth_callback'

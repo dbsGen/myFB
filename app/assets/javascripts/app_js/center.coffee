@@ -33,14 +33,37 @@ $(document).ready ->
     else
       ele.parent().children('.help-block').text('复制失败,请尝试手动复制.')
   )
+  $(document).delegate('.file-close', 'click', ->
+    $this = $(this)
+    ele = $this.parent()
+    r = confirm('确定要删除这个图片?')
+    src = ele.find('.thumbnail img').attr('src')
+    if r
+      $.ajax(
+        url: $this.attr('url') + src.match(/[^\/]+$/)
+        type: 'delete'
+        success: (data) ->
+          if parseInt(data.code) == 200
+            ele.fadeOut(200, ->
+              ele.remove()
+            )
+          else
+            alert('删除失败')
+        error: ->
+          alert('删除失败')
+      )
+  )
 
-  insertFile = (file, delay) ->
+  insertFile = (file, delay, before = false) ->
     ex = $('#example').clone()
     ex.attr('id', file.fs_id)
     ex.find('.thumbnail img').attr('src', file.url)
     ex.find('#link').val(file.url)
     ex.hide()
-    ex.insertBefore('#end')
+    if before
+      ex.insertAfter('#insert')
+    else
+      ex.insertBefore('#end')
     setTimeout(->
       ex.fadeIn()
     , delay)
@@ -81,11 +104,16 @@ $(document).ready ->
         return false
       else
         UPLOADING = true
-    done: ->
-      updateImages()
+        upload_inner.addClass('loading')
+    done: (e, data) ->
+      for item in data.result.list
+        insertFile(item, 0, true)
     always: ->
       UPLOADING = false
-
+      upload_inner.removeClass('loading')
+      upload_inner.children('.add-label').text("上传图片")
+    progress: (e, data) ->
+      upload_inner.children('.add-label').text("#{parseInt(data.loaded / data.total * 100, 10)}%")
   )
 
 #    upload.fileupload('send')

@@ -32,9 +32,16 @@ class MainController < ApplicationController
         if json['error_code']
           render status: 500, json: json
         else
-          render json: {code: 200, msg: 'Send success!'}
+          render json: {
+              list: [{
+                         fs_id: json['fs_id'],
+                         url: image_url(current_user.third_party_id, json['path'][/[^\/]+$/]),
+                         ctime: json['ctime'],
+                         mtime: json['mtime']
+                     }]
+          }
         end
-      rescue e
+      rescue StandardError => e
         render status: 500, json: {code: 200, msg: 'Upload failed'}
       end
     else
@@ -64,6 +71,23 @@ class MainController < ApplicationController
         end
         render json: ret
       end
+    end
+  end
+
+  def remove
+    file = params[:file]
+    format = params[:format]
+    render status: 500, json:{code: 500, msg: '授权失效'} unless check_token(current_user)
+    uri = BaiduApi.delete(current_user.token.source, "/#{IMAGE_DIR}/#{file}.#{format}")
+    begin
+      result = JSON(HTTPClient.post(uri).body)
+      if result['error_code']
+        render status: 500, json: {code: 500, msg: 'Delete failed'}
+      else
+        render json: {code: 200, msg: 'Delete success!'}
+      end
+    rescue StandardError => _
+      render status: 500, json: {code: 500, msg: 'Delete failed'}
     end
   end
 

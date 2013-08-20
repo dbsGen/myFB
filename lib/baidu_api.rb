@@ -47,6 +47,19 @@ class BaiduApi
     uri
   end
 
+  def self.delete(token, path)
+    path = "#{BAIDU_ROOT_FOLDER}#{path}"
+    params = {
+        :method => 'delete',
+        :access_token => token[:access_token] || token['access_token'],
+        :path => path
+    }
+    p = URI::Parser.new
+    uri = p.parse(BAIDU_UPLOAD_SITE + BAIDU_FILES)
+    uri.query = params.to_query
+    uri
+  end
+
   #只拼出url下载到个人机器上，这样流量不用通过服务器
   def self.download(token, path)
     path = "#{BAIDU_ROOT_FOLDER}#{path}"
